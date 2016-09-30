@@ -224,22 +224,27 @@
               <xsl:with-param name="content" select="document(concat($PROT, '://', encoder:encode($FEDORAUSER), ':', encoder:encode($FEDORAPASS), '@', $HOST, ':', $PORT, '/fedora/objects/', $PID, '/datastreams/', @ID, '/content'))"/>
             </xsl:apply-templates>
           </xsl:when>
+
+	  <!--
+	     We're temporarily disabling the indexing of non-xml datastreams due to the high IO cost with our current Islandora. 
+	  -->
+	  
           <!-- non-xml managed datastreams...
 
                Really, should probably only
                handle the mimetypes supported by the "getDatastreamText" call:
                https://github.com/fcrepo/gsearch/blob/master/FedoraGenericSearch/src/java/dk/defxws/fedoragsearch/server/TransformerToText.java#L185-L200
           -->
-          <xsl:when test="@CONTROL_GROUP='M' and foxml:datastreamVersion[last() and not(starts-with(@MIMETYPE, 'image') or starts-with(@MIMETYPE, 'audio') or starts-with(@MIMETYPE, 'video') or @MIMETYPE = 'application/pdf')]">
-            <!-- TODO: should do something about mime type filtering
-              text/plain should use the getDatastreamText extension because document will only work for xml docs
-              xml files should use the document function
-              other mimetypes should not be being sent
-              will this let us not use the content variable? -->
-            <xsl:apply-templates select="foxml:datastreamVersion[last()]">
-              <xsl:with-param name="content" select="java:ca.discoverygarden.gsearch_extensions.XMLStringUtils.escapeForXML(normalize-space(exts:getDatastreamText($PID, $REPOSITORYNAME, @ID, $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS)))"/>
-            </xsl:apply-templates>
-          </xsl:when>
+          <!-- <xsl:when test="@CONTROL_GROUP='M' and foxml:datastreamVersion[last() and not(starts-with(@MIMETYPE, 'image') or starts-with(@MIMETYPE, 'audio') or starts-with(@MIMETYPE, 'video') or @MIMETYPE = 'application/pdf')]"> -->
+             <!-- TODO: should do something about mime type filtering -->
+          <!--     text/plain should use the getDatastreamText extension because document will only work for xml docs -->
+          <!--     xml files should use the document function -->
+          <!--     other mimetypes should not be being sent -->
+          <!--     will this let us not use the content variable? -\-> -->
+          <!--   <xsl:apply-templates select="foxml:datastreamVersion[last()]"> -->
+          <!--     <xsl:with-param name="content" select="java:ca.discoverygarden.gsearch_extensions.XMLStringUtils.escapeForXML(normalize-space(exts:getDatastreamText($PID, $REPOSITORYNAME, @ID, $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS)))"/> -->
+          <!--   </xsl:apply-templates> -->
+          <!-- </xsl:when> -->
         </xsl:choose>
       </xsl:for-each>
 
